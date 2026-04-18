@@ -4,13 +4,17 @@ CC?=i686-elf-gcc
 LD?=i686-elf-ld
 
 # Compiler flags
-CFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -nostdlib
+CFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -I. -Ikernel -Iquadratic
+
+# Linker flags
+LDFLAGS=-nostdlib
 
 # If using standard GCC, we need -m32. If using cross-compiler, it might be implicit or ignored.
 # We can detect if CC is "gcc" and add -m32.
 ifeq ($(CC),gcc)
     CFLAGS_EXTRA=-m32
     CFLAGS+=$(CFLAGS_EXTRA)
+    LDFLAGS+=-m elf_i386
 endif
 
 # Kernel object files
@@ -28,7 +32,7 @@ quadraticos.iso: kernel.bin
 	grub-mkrescue -o quadraticos.iso isodir
 
 kernel.bin: boot/boot.o $(KERNEL_OBJS)
-	$(LD) -T boot/linker.ld -o kernel.bin $(KERNEL_OBJS) boot/boot.o --oformat binary
+	$(LD) $(LDFLAGS) -T boot/linker.ld -o kernel.bin boot/boot.o $(KERNEL_OBJS)
 
 boot/boot.o: boot/boot.asm
 	$(ASM) -f elf32 $< -o $@
