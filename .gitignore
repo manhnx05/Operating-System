@@ -1,0 +1,23 @@
+# Build artifacts
+*.o
+*.bin
+*.iso
+*.exe
+
+# Test files
+test_modules.c
+test_modules
+
+# Build directories
+isodir/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
