@@ -3,6 +3,12 @@
 #include "math.h"
 
 void solve_quadratic(float a, float b, float c) {
+    // Validate input
+    if (a != a || b != b || c != c) { // Check for NaN
+        print_string("Error: Invalid input (NaN detected)\n");
+        return;
+    }
+    
     if (a == 0) {
         if (b == 0) {
             if (c == 0) {
