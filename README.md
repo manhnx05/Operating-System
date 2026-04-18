@@ -81,6 +81,30 @@ Hoặc chạy trực tiếp với QEMU:
 qemu-system-i386 -cdrom quadraticos.iso
 ```
 
+## Cách chạy với VirtualBox
+
+**QUAN TRỌNG:** VirtualBox mặc định dùng UEFI, nhưng Quadratic OS dùng BIOS/Legacy boot.
+
+### Các bước:
+
+1. **Tạo VM mới:**
+   - Name: Quadratic OS
+   - Type: Other
+   - Version: Other/Unknown (32-bit)
+   - Memory: 128-256 MB
+   - Hard disk: Không cần
+
+2. **Tắt EFI (BẮT BUỘC):**
+   - Settings → System → Motherboard
+   - **UNCHECK** "Enable EFI (special OSes only)"
+   - Boot Order: Chỉ check "Optical"
+
+3. **Mount ISO:**
+   - Settings → Storage → Controller: IDE
+   - Click "Empty" → Click icon CD → Choose `quadraticos.iso`
+
+4. **Start VM**
+
 ## Cấu trúc thư mục
 
 *   `boot/` - Mã nguồn bootloader (Assembly) và linker script
