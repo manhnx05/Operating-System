@@ -1,11 +1,20 @@
+# Allow overriding CC and LD for Docker/Standard GCC usage
 ASM=nasm
-CC=i686-elf-gcc
-LD=i686-elf-ld
+CC?=i686-elf-gcc
+LD?=i686-elf-ld
 
-CFLAGS=-std=gnu99 -ffreestanding -O2 -Wall -Wextra -I.
-LDFLAGS=-ffreestanding -nostdlib -lgcc
+# Compiler flags
+CFLAGS=-ffreestanding -O2 -Wall -Wextra -fno-exceptions -nostdlib
 
-KERNEL_OBJS=kernel/kernel.o kernel/screen.o kernel/string.o kernel/math.o kernel/keyboard.o quadratic/quadratic.o
+# If using standard GCC, we need -m32. If using cross-compiler, it might be implicit or ignored.
+# We can detect if CC is "gcc" and add -m32.
+ifeq ($(CC),gcc)
+    CFLAGS_EXTRA=-m32
+    CFLAGS+=$(CFLAGS_EXTRA)
+endif
+
+# Kernel object files
+KERNEL_OBJS=kernel/kernel.o kernel/screen.o kernel/keyboard.o kernel/math.o kernel/string.o quadratic/quadratic.o
 
 all: quadraticos.iso
 
@@ -19,7 +28,7 @@ quadraticos.iso: kernel.bin
 	grub-mkrescue -o quadraticos.iso isodir
 
 kernel.bin: boot/boot.o $(KERNEL_OBJS)
-	$(LD) -T boot/linker.ld -o kernel.bin $^ --oformat binary
+	$(LD) -T boot/linker.ld -o kernel.bin $(KERNEL_OBJS) boot/boot.o --oformat binary
 
 boot/boot.o: boot/boot.asm
 	$(ASM) -f elf32 $< -o $@
