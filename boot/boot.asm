@@ -1,37 +1,32 @@
-[bits 16]
-[org 0x7c00]
+; boot/boot.asm
+MBALIGN  equ  1 << 0            ; align loaded modules on page boundaries
+MEMINFO  equ  1 << 1            ; provide memory map
+FLAGS    equ  MBALIGN | MEMINFO ; this is the Multiboot 'flag' field
+MAGIC    equ  0x1BADB002        ; 'magic number' lets bootloader find the header
+CHECKSUM equ -(MAGIC + FLAGS)   ; checksum of above, to prove we are multiboot
+
+section .multiboot
+align 4
+    dd MAGIC
+    dd FLAGS
+    dd CHECKSUM
+
+section .bss
+align 16
+stack_bottom:
+resb 16384 ; 16 KiB
+stack_top:
+
+section .text
+global start
+extern kernel_main
 
 start:
-    mov ax, 0x3
-    int 0x10    ; Set video mode
+    mov esp, stack_top
     
-    mov si, msg
-    call print_string
+    call kernel_main
     
-    ; Load kernel
-    mov ah, 0x02
-    mov al, 15   ; Số sector cần đọc
-    mov ch, 0    ; Cylinder
-    mov cl, 2    ; Sector bắt đầu
-    mov dh, 0    ; Head
-    mov bx, 0x1000
-    mov es, bx
-    mov bx, 0x0
-    int 0x13
-    
-    jmp 0x1000:0x0  ; Nhảy đến kernel
-
-print_string:
-    lodsb
-    or al, al
-    jz .done
-    mov ah, 0x0e
-    int 0x10
-    jmp print_string
-.done:
-    ret
-
-msg db "Booting Quadratic OS...", 0
-
-times 510-($-$$) db 0
-dw 0xaa55
+    cli
+.hang:
+    hlt
+    jmp .hang
