@@ -53,11 +53,32 @@ void kernel_main() {
         print_string(" Enter equation coefficients (ax^2 + bx + c = 0)\n");
         set_color(COLOR_LIGHT_GREY, COLOR_BLACK);
         
+        // Draw input box
+        draw_box(5, 10, 70, 8, (COLOR_BLUE << 4) | COLOR_WHITE);
+        
+        // Input a
+        set_cursor_position(8, 11);
+        set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+        print_string("Coefficient a (x^2): ");
         set_color(COLOR_YELLOW, COLOR_BLACK);
-        float a = get_float_input(" a = ");
-        float b = get_float_input(" b = ");
-        float c = get_float_input(" c = ");
+        float a = get_float_input("");
+        
+        // Input b
+        set_cursor_position(8, 13);
+        set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+        print_string("Coefficient b (x):   ");
+        set_color(COLOR_YELLOW, COLOR_BLACK);
+        float b = get_float_input("");
+        
+        // Input c
+        set_cursor_position(8, 15);
+        set_color(COLOR_LIGHT_CYAN, COLOR_BLACK);
+        print_string("Coefficient c:       ");
+        set_color(COLOR_YELLOW, COLOR_BLACK);
+        float c = get_float_input("");
+        
         set_color(COLOR_LIGHT_GREY, COLOR_BLACK);
+        set_cursor_position(0, 19);
         
         print_string("\n ");
         set_color(COLOR_LIGHT_MAGENTA, COLOR_BLACK);
